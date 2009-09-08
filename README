@@ -131,3 +131,9 @@ to specify a C function "proto" as a permanent object, this restriction
 will be relaxed.
 
 BUGS: None known. Emphasis on the 'known'.
+
+TESTING:
+
+Pluto comes with a small test suite to check for regressions; type 'make test'
+after building Pluto to run it.  (Note to Mac OS X users: you may need to set
+your LUA_CPATH environment variable to '?.dylib' or something similar)
