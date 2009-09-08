@@ -9,8 +9,6 @@ default: pluto.so pptest puptest
 %.lo: %.c
 	$(LIBTOOL) --mode=compile cc $(CFLAGS) -c $<
 
-all: pluto.dylib pptest puptest
-
 pluto.so: pluto.lo pdep.lo lzio.lo
 	$(LIBTOOL) --mode=link cc -rpath /usr/local/lib/lua/5.1 -o libpluto.la $^
 	mv .libs/libpluto.so.0.0.0 $@
