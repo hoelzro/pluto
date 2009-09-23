@@ -904,6 +904,7 @@ static void unpersiststring(UnpersistInfo *upi)
 
 static void unpersistspecialtable(int ref, UnpersistInfo *upi)
 {
+	(void) ref; 			/* unused */
 					/* perms reftbl ... */
 	lua_checkstack(upi->L, 1);
 	unpersist(upi);
@@ -1153,6 +1154,9 @@ static void unpersistproto(int ref, UnpersistInfo *upi)
 	 * source, and valid code, even before we actually read in the real
 	 * code. */
 	TString *source = pdep_newlstr(upi->L, "", 0);
+
+	(void) ref;			/* unused */
+
 	p = pdep_newproto(upi->L);
 	p->source = source;
 	p->sizecode=1;
@@ -1458,6 +1462,7 @@ static void unpersistuserdata(int ref, UnpersistInfo *upi)
 
 static void unpersistpermanent(int ref, UnpersistInfo *upi)
 {
+	(void) ref;			/* unused */
 					/* perms reftbl ... */
 	lua_checkstack(upi->L, 2);
 	unpersist(upi);
@@ -1612,6 +1617,9 @@ typedef struct LoadInfo_t {
 
 static const char *bufreader(lua_State *L, void *ud, size_t *sz) {
 	LoadInfo *li = (LoadInfo *)ud;
+
+	(void) L;			/* unused*/
+
 	if(li->size == 0) {
 		return NULL;
 	}
