@@ -40,6 +40,7 @@
 #endif
 
 #include <string.h>
+#include <stdint.h>	/*for intptr_t*/
 
 
 
@@ -624,7 +625,7 @@ static void persist(PersistInfo *pi)
 	if(!lua_isnil(pi->L, -1)) {
 					/* perms reftbl ... obj ref */
 		int zero = 0;
-		int ref = (int)lua_touserdata(pi->L, -1);
+		int ref = (intptr_t)lua_touserdata(pi->L, -1);
 		pi->writer(pi->L, &zero, sizeof(int), pi->ud);
 		pi->writer(pi->L, &ref, sizeof(int), pi->ud);
 		lua_pop(pi->L, 1);
@@ -658,7 +659,7 @@ static void persist(PersistInfo *pi)
 	}
 	lua_pushvalue(pi->L, -1);
 					/* perms reftbl ... obj obj */
-	lua_pushlightuserdata(pi->L, (void*)(++(pi->counter)));
+	lua_pushlightuserdata(pi->L, (void*)((intptr_t) ++(pi->counter)));
 					/* perms reftbl ... obj obj ref */
 	lua_rawset(pi->L, 2);
 					/* perms reftbl ... obj */
@@ -849,7 +850,7 @@ static void registerobject(int ref, UnpersistInfo *upi)
 {
 					/* perms reftbl ... obj */
 	lua_checkstack(upi->L, 2);
-	lua_pushlightuserdata(upi->L, (void*)ref);
+	lua_pushlightuserdata(upi->L, (void*)(intptr_t)ref);
 					/* perms reftbl ... obj ref */
 	lua_pushvalue(upi->L, -2);
 					/* perms reftbl ... obj ref obj */
@@ -1476,7 +1477,7 @@ static int inreftable(lua_State *L, int ref)
 	int res;
 	lua_checkstack(L, 1);
 					/* perms reftbl ... */
-	lua_pushlightuserdata(L, (void*)ref);
+	lua_pushlightuserdata(L, (void*)(intptr_t)ref);
 					/* perms reftbl ... ref */
 	lua_gettable(L, 2);
 					/* perms reftbl ... obj? */
@@ -1564,7 +1565,7 @@ static void unpersist(UnpersistInfo *upi)
 			lua_pushnil(upi->L);
 					/* perms reftbl ... nil */
 		} else {
-			lua_pushlightuserdata(upi->L, (void*)ref);
+			lua_pushlightuserdata(upi->L, (void*)(intptr_t)ref);
 					/* perms reftbl ... ref */
 			lua_gettable(upi->L, 2);
 					/* perms reftbl ... obj? */
