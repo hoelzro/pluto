@@ -1477,7 +1477,7 @@ static void unpersistpermanent(int ref, UnpersistInfo *upi)
 }
 
 /* For debugging only; not called when lua_assert is empty */
-static int inreftable(lua_State *L, int ref)
+int inreftable(lua_State *L, int ref)
 {
 	int res;
 	lua_checkstack(L, 1);
