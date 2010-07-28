@@ -1,16 +1,10 @@
-PLATFORMS=(linux macosx mingw)
+TARGETS=$(shell ls makefile.* | sed -e "s/makefile.//")
 
 none:
-	@echo "Please specify a target platform: $(PLATFORMS)"
+	@echo "Please specify a target platform: $(TARGETS)"
 
-linux:
-	make -f makefile.linux
-
-macosx:
-	make -f makefile.macosx
-
-mingw:
-	make -f makefile.mingw
+$(TARGETS):
+	@make -f makefile.$@
 
 clean:
 	rm -f *.o *.so *.dylib *.lo *.la *.dll *.exe pptest puptest
