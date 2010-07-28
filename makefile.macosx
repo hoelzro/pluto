@@ -3,7 +3,7 @@ LUA_LIBS=/opt/local/lib
 
 LDLIBS= -lm -ldl -llua -L$(LUA_LIBS) # I think this'll only work on 10.3 or later
 LDFLAGS= -bundle -undefined dynamic_lookup
-CFLAGS = -g3 -Wall -ansi -pedantic -I$(LUA_INCLUDES)
+CFLAGS = -g3 -Wall -Wconversion -ansi -pedantic -I$(LUA_INCLUDES)
 
 %.o: %.c
 	cc $(CFLAGS) -c $<

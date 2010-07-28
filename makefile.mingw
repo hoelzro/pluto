@@ -4,7 +4,7 @@ LUA_LIBS=/home/rob/lua-5.1.4/src/
 CC= i486-mingw32-gcc
 
 LDLIBS= -lm -llua -L$(LUA_LIBS)
-CFLAGS= -g3 -Wall -ansi -pedantic -I$(LUA_INCLUDES)
+CFLAGS= -g3 -Wall -Wconversion -ansi -pedantic -I$(LUA_INCLUDES)
 
 default: pluto.dll pptest.exe puptest.exe
 

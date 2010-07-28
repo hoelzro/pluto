@@ -1,6 +1,6 @@
 LDLIBS= -lm -ldl -llua
 LDFLAGS = -rdynamic
-CFLAGS= -g3 -Wall -ansi -pedantic
+CFLAGS= -g3 -Wall -Wconversion -ansi -pedantic
 
 LIBTOOL=libtool --tag=CC
 
