@@ -68,6 +68,7 @@ function test(rootobj)
 		rootobj.testuvcycle()[1] == rootobj.testuvcycle()[2])
 	dotest("__newindex metamethod", rootobj.testniinmt.a == 3)
 	dotest("Debug info           ", (rootobj.testdebuginfo(2)) == "foo")
+	dotest("NaN value            ", rootobj.testnan[1] ~= rootobj.testnan[1])
 	print()
 	if passed == total then
 		print("All tests passed.")

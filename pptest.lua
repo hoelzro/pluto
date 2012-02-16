@@ -130,6 +130,9 @@ function debuginfo(foo)
 	return debug.getlocal(1,1)
 end
 
+nantable = {}
+nantable[1] = 0/0
+
 rootobj = {
 	testfalse = false,
 	testtrue = true,
@@ -157,7 +160,8 @@ rootobj = {
 	testuvinthread = uvinthread,
 	testniinmt = niinmt,
 	testuvcycle = uvcycle,
-	testdebuginfo = debuginfo
+	testdebuginfo = debuginfo,
+	testnan = nantable
 }
 
 buf = pluto.persist(perms, rootobj)

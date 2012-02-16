@@ -615,29 +615,46 @@ static void persiststring(PersistInfo *pi)
  */
 static void persist(PersistInfo *pi)
 {
-					/* perms reftbl ... obj */
-	lua_checkstack(pi->L, 2);
-	/* If the object has already been written, write a reference to it */
-	lua_pushvalue(pi->L, -1);
-					/* perms reftbl ... obj obj */
-	lua_rawget(pi->L, 2);
-					/* perms reftbl ... obj ref? */
-	if(!lua_isnil(pi->L, -1)) {
-					/* perms reftbl ... obj ref */
-		int zero = 0;
-		int ref = (intptr_t)lua_touserdata(pi->L, -1);
-		pi->writer(pi->L, &zero, sizeof(int), pi->ud);
-		pi->writer(pi->L, &ref, sizeof(int), pi->ud);
-		lua_pop(pi->L, 1);
-					/* perms reftbl ... obj ref */
+	/* Grab the object's type. */
+	int type = lua_type(pi->L, -1);
+	int simple = type == LUA_TNIL 
+		|| type == LUA_TBOOLEAN 
+		|| type == LUA_TNUMBER 
+		|| type == LUA_TLIGHTUSERDATA;
+  
+	/* Increment the number of objects persisted. */
+	++(pi->counter);
+  
+	/* If the type isn't simple, check to see if
+	   one is already in the reftable. */
+	if(!simple) {
+
+		/* perms reftbl ... obj */
+		lua_checkstack(pi->L, 2);
+		/* If the object has already been written, write a reference to it */
+		lua_pushvalue(pi->L, -1);
+		/* perms reftbl ... obj obj */
+		lua_rawget(pi->L, 2);
+		/* perms reftbl ... obj ref? */
+		if(!lua_isnil(pi->L, -1)) {
+			/* perms reftbl ... obj ref */
+			int zero = 0;
+			int ref = (intptr_t)lua_touserdata(pi->L, -1);
+			pi->writer(pi->L, &zero, sizeof(int), pi->ud);
+			pi->writer(pi->L, &ref, sizeof(int), pi->ud);
+			lua_pop(pi->L, 1);
+			/* perms reftbl ... obj ref */
 #ifdef PLUTO_DEBUG
-		printindent(pi->level);
-		printf("0 %d\n", ref);
+			printindent(pi->level);
+			printf("0 %d\n", ref);
 #endif
-		return;
+			return;
+		}
+		/* perms reftbl ... obj nil */
+		lua_pop(pi->L, 1);
+
 	}
-					/* perms reftbl ... obj nil */
-	lua_pop(pi->L, 1);
+
 					/* perms reftbl ... obj */
 	/* If the object is nil, write the pseudoreference 0 */
 	if(lua_isnil(pi->L, -1)) {
@@ -657,12 +674,17 @@ static void persist(PersistInfo *pi)
 		int one = 1;
 		pi->writer(pi->L, &one, sizeof(int), pi->ud);
 	}
-	lua_pushvalue(pi->L, -1);
-					/* perms reftbl ... obj obj */
-	lua_pushlightuserdata(pi->L, (void*)((intptr_t) ++(pi->counter)));
-					/* perms reftbl ... obj obj ref */
-	lua_rawset(pi->L, 2);
-					/* perms reftbl ... obj */
+
+	/* put the value in the reftable if necessary.
+	   Simple types don't need to be put in the reftable. */
+	if(!simple) {
+		lua_pushvalue(pi->L, -1);
+		/* perms reftbl ... obj obj */
+		lua_pushlightuserdata(pi->L, (void*)((intptr_t) pi->counter));
+		/* perms reftbl ... obj obj ref */
+		lua_rawset(pi->L, 2);
+		/* perms reftbl ... obj */
+	}
 
 	pi->writer(pi->L, &pi->counter, sizeof(int), pi->ud);
 
