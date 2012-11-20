@@ -2,6 +2,10 @@ $Id$
 
 PLUTO - Heavy duty persistence for Lua
 
+NOTE: This library is now maintained by Stefan Reich, of the LuaOS project:
+
+http://luaos.net
+
 Pluto is a library which allows users to write arbitrarily large portions
 of the "Lua universe" into a flat file, and later read them back into the
 same or a different Lua universe. Object references are appropriately
